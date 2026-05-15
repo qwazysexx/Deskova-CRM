@@ -30,8 +30,8 @@ def blog_list(request):
 #     return Response(serializer.data)
 
 @api_view(['GET'])
-def get_blog(request, slug):
-    blog = Lead.objects.get(slug=slug)
+def get_blog(request, pk):
+    blog = Lead.objects.get(id=pk)
     serializer = LeadSerializer(blog)
     return Response(serializer.data)
 
