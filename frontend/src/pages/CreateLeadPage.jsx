@@ -20,15 +20,14 @@ import SmallSpinner from "@/ui_components/SmallSpinner";
 import SmallSpinnerText from "@/ui_components/SmallSpinnerText";
 import LoginPage from "./LoginPage";
 
-const CreateLeadPage = ({ blog, isAuthenticated }) => {
+const CreateLeadPage = ({ lead, leadID, isAuthenticated }) => {
   const { register, handleSubmit, formState, setValue } = useForm({
-    defaultValues: blog ? blog : {},
+    defaultValues: lead ? lead : {},
   });
   const { errors } = formState;
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const blogID = blog?.id;
 
   const updateMutation = useMutation({
     mutationFn: ({ data, id }) => updateLead(data, id),
@@ -63,12 +62,12 @@ const CreateLeadPage = ({ blog, isAuthenticated }) => {
     formData.append("phone", data.phone);
     formData.append("company", data.company);
 
-    mutation.mutate(formData);
-    // if (lead && leadID) {
-    //   updateMutation.mutate({ data: formData, id: leadID });
-    // } else {
-    //   mutation.mutate(formData);
-    // }
+    
+    if (lead && leadID) {
+      updateMutation.mutate({ data: formData, id: leadID });
+    } else {
+      mutation.mutate(formData);
+    }
   }
 
   if (isAuthenticated === false) {
@@ -79,17 +78,17 @@ const CreateLeadPage = ({ blog, isAuthenticated }) => {
     <form
       onSubmit={handleSubmit(onSubmit)}
       className={`${
-        blog && "h-[90%] overflow-auto"
+        lead && "h-[90%] overflow-auto"
       }  md:px-16 px-8 py-6 flex flex-col mx-auto my-9 items-center gap-6 w-fit rounded-lg bg-[#FFFFFF] shadow-xl dark:text-white dark:bg-[#141624]`}
     >
       <div className="flex flex-col gap-2 justify-center items-center mb-2">
         <h3 className="font-semibold text-2xl max-sm:text-xl">
-          {blog ? "Update Lead" : "Create Lead"}
+          {lead ? "Update Lead" : "Create Lead"}
         </h3>
 
         <p className="max-sm:text-[14px]">
-          {blog
-            ? "Do you want to update your post?"
+          {lead
+            ? "Do you want to update this lead?"
             : "Create a new lead for your CRM system."}
         </p>
       </div>
@@ -175,8 +174,7 @@ const CreateLeadPage = ({ blog, isAuthenticated }) => {
           onValueChange={(value) =>
             setValue("status", value, { shouldValidate: true })
           }
-          defaultValue="New"
-          // defaultValue={blog ? blog.status : ""}
+          defaultValue={lead ? lead.status : ""}
         >
           <SelectTrigger className="border-2 border-[#141624] dark:border-[#3B3C4A] focus:outline-0 h-[40px] w-full max-sm:w-[300px] max-sm:text-[14px]">
             <SelectValue placeholder="Select a status" />
@@ -199,7 +197,7 @@ const CreateLeadPage = ({ blog, isAuthenticated }) => {
       </div>
 
       <div className="w-full flex items-center justify-center flex-col my-4">
-        {blog ? (
+        {lead ? (
           <button
             disabled={updateMutation.isPending}
             className="bg-[#4B6BFB] text-white w-full py-3 px-2 rounded-md flex items-center justify-center gap-2"

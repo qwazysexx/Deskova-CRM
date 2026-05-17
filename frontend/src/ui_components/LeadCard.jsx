@@ -6,20 +6,30 @@ const LeadCard = ({ lead }) => {
   return (
     <div className="px-3 py-3 rounded-md w-[300px] h-auto flex flex-col gap-4 dark:border-gray-800 border shadow-lg">
       <Badge status={lead.status} />
+
       <Link to={`/leads/${lead.id}`}>
-        <h3 className="font-semibold leading-normal text-[#181A2A] dark:text-white">
+        <h3 className="font-semibold leading-normal text-[#181A2A] dark:text-white text-2xl">
           {lead.lead_name}
-          
-          <p className="text-sm text-[#97989F]">
-            Company: {lead.company || "No company"}
-          </p>
-
-          <p className="text-sm text-[#97989F]">Email: {lead.email}</p>
-
-          <p className="text-sm text-[#97989F]">Phone: {lead.phone}</p>
-          <LeadFooter lead={lead} />
         </h3>
       </Link>
+
+      <div className="space-y-2 mt-2 text-sm text-[#BABABF]">
+        <p>
+          <strong>Email:</strong> {lead.email}
+        </p>
+
+        <p>
+          <strong>Phone:</strong> {lead.phone}
+        </p>
+
+        <p>
+          <strong>Company:</strong> {lead.company || "No company"}
+        </p>
+
+        <p className="line-clamp-2">{lead.notes || "No notes"}</p>
+      </div>
+
+      <LeadFooter lead={lead} />
     </div>
   );
 };
