@@ -33,6 +33,12 @@ const [statusFilter, setStatusFilter] = useState("All");
 
   return matchesSearch && matchesStatus;
 });
+
+  const totalLeads = leads.length;
+  const newLeads = leads.filter((lead) => lead.status === "New").length;
+  const contactedLeads = leads.filter((lead) => lead.status === "Contacted").length;
+  const qualifiedLeads = leads.filter((lead) => lead.status === "Qualified").length;
+  const closedLeads = leads.filter((lead) => lead.status === "Closed").length;
   const numOfPages = Math.ceil(data?.count / numOfBlogsPerPage);
 
   function handleSetPage(val) {
@@ -58,6 +64,32 @@ const [statusFilter, setStatusFilter] = useState("All");
     onChange={(e) => setSearch(e.target.value)}
     className="border rounded-md px-4 py-2 bg-[#141624] text-white"
   />
+<div className="max-container padding-x py-6 grid grid-cols-2 md:grid-cols-5 gap-4">
+  <div className="border dark:border-gray-800 rounded-lg p-4 dark:text-white">
+    <p className="text-sm text-[#97989F]">Total Leads</p>
+    <h3 className="text-2xl font-semibold">{totalLeads}</h3>
+  </div>
+
+  <div className="border dark:border-gray-800 rounded-lg p-4 dark:text-white">
+    <p className="text-sm text-[#97989F]">New</p>
+    <h3 className="text-2xl font-semibold">{newLeads}</h3>
+  </div>
+
+  <div className="border dark:border-gray-800 rounded-lg p-4 dark:text-white">
+    <p className="text-sm text-[#97989F]">Contacted</p>
+    <h3 className="text-2xl font-semibold">{contactedLeads}</h3>
+  </div>
+
+  <div className="border dark:border-gray-800 rounded-lg p-4 dark:text-white">
+    <p className="text-sm text-[#97989F]">Qualified</p>
+    <h3 className="text-2xl font-semibold">{qualifiedLeads}</h3>
+  </div>
+
+  <div className="border dark:border-gray-800 rounded-lg p-4 dark:text-white">
+    <p className="text-sm text-[#97989F]">Closed</p>
+    <h3 className="text-2xl font-semibold">{closedLeads}</h3>
+  </div>
+</div>
 
   <select
     value={statusFilter}

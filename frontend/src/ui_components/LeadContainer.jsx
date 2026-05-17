@@ -6,6 +6,16 @@ const LeadContainer = ({isPending, leads=[], title="Latest Leads"}) => {
   if(isPending){
     return <Spinner />
   }
+  
+  if (leads.length === 0) {
+  return (
+    <section className="padding-x py-10 max-container text-center">
+      <p className="text-[#97989F] text-lg">
+        No leads found
+      </p>
+    </section>
+  );
+}
 
   return (
     <section className="padding-x py-6  max-container">

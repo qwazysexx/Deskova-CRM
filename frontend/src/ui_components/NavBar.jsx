@@ -74,6 +74,15 @@ const NavBar = ({
               Create Lead
             </NavLink>
           </li>
+
+          <li className="font-semibold">
+            <NavLink
+              to="/kanban"
+              className={({ isActive }) => (isActive ? "active" : "")}
+            >
+              Kanban
+            </NavLink>
+          </li>
         </ul>
 
         <Switch onCheckedChange={handleDarkMode} checked={darkMode} />

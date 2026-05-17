@@ -6,6 +6,7 @@ import AppLayout from "./ui_components/AppLayout";
 import ProtectedRoute from "./ui_components/ProtectedRoute";
 
 import HomePage from "./pages/HomePage";
+import KanbanPage from "./pages/KanbanPage";
 import LeadDetailPage from "./pages/LeadDetailPage";
 import CreateLeadPage from "./pages/CreateLeadPage";
 import SignupPage from "./pages/SignupPage";
@@ -46,7 +47,7 @@ const App = () => {
           }
         >
           <Route index element={<HomePage />} />
-
+          <Route path="kanban" element={<KanbanPage />} />
           <Route
             path="profile/:username"
             element={<ProfilePage authUsername={username} />}

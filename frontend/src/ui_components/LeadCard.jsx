@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 const LeadCard = ({ lead }) => {
   return (
-    <div className="px-3 py-3 rounded-md w-[300px] h-auto flex flex-col gap-4 dark:border-gray-800 border shadow-lg">
+    <div className="px-3 py-3 rounded-md w-full h-auto flex flex-col gap-4 dark:border-gray-800 border shadow-lg">
       <Badge status={lead.status} />
 
       <Link to={`/leads/${lead.id}`}>
