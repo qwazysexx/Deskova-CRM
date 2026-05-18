@@ -1,6 +1,5 @@
 from django.shortcuts import render
-from .models import Lead
-from .models import ActivityLog
+from .models import Lead, ActivityLog, InviteCode
 from django.contrib.auth import get_user_model
 from .serializers import (
     SimpleAuthorSerializer,
@@ -46,10 +45,31 @@ def get_blog(request, pk):
 
 @api_view(["POST"])
 def register_user(request):
+    invite_code_value = request.data.get("invite_code")
+
+    if not invite_code_value:
+        return Response(
+            {"message": "Invite code is required"}, status=status.HTTP_400_BAD_REQUEST
+        )
+
+    try:
+        invite_code = InviteCode.objects.get(code=invite_code_value, is_used=False)
+    except InviteCode.DoesNotExist:
+        return Response(
+            {"message": "Invalid or already used invite code"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
     serializer = UserRegistrationSerializer(data=request.data)
+
     if serializer.is_valid():
         serializer.save()
+
+        invite_code.is_used = True
+        invite_code.save()
+
         return Response(serializer.data)
+
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
 from django.utils.text import slugify
+import secrets
 
 # Create your models here.
 
@@ -114,3 +115,17 @@ class ActivityLog(models.Model):
 
     def __str__(self):
         return f"{self.action} - {self.created_at}"
+
+
+class InviteCode(models.Model):
+    code = models.CharField(max_length=100, unique=True)
+    is_used = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        if not self.code:
+            self.code = secrets.token_hex(4).upper()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.code
