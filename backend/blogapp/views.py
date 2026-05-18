@@ -1,7 +1,14 @@
 from django.shortcuts import render
 from .models import Lead
+from .models import ActivityLog
 from django.contrib.auth import get_user_model
-from .serializers import SimpleAuthorSerializer, UpdateUserProfileSerializer, UserInfoSerializer, UserRegistrationSerializer, LeadSerializer
+from .serializers import (
+    SimpleAuthorSerializer,
+    UpdateUserProfileSerializer,
+    UserInfoSerializer,
+    UserRegistrationSerializer,
+    LeadSerializer,
+)
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -10,7 +17,7 @@ from rest_framework.pagination import PageNumberPagination
 
 
 class BlogListPagination(PageNumberPagination):
-    page_size= 3
+    page_size = 3
 
 
 # Create your views here.
@@ -29,12 +36,12 @@ def blog_list(request):
 #     serializer = LeadSerializer(blogs, many=True)
 #     return Response(serializer.data)
 
-@api_view(['GET'])
+
+@api_view(["GET"])
 def get_blog(request, pk):
     blog = Lead.objects.get(id=pk)
     serializer = LeadSerializer(blog)
     return Response(serializer.data)
-
 
 
 @api_view(["POST"])
@@ -46,9 +53,7 @@ def register_user(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
-
-@api_view(['PUT'])
+@api_view(["PUT"])
 @permission_classes([IsAuthenticated])
 def update_user_profile(request):
     user = request.user
@@ -59,17 +64,26 @@ def update_user_profile(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
-
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def create_blog(request):
     user = request.user
     serializer = LeadSerializer(data=request.data)
+
     if serializer.is_valid():
-        serializer.save(author=user)
+        lead = serializer.save(author=user)
+
+        ActivityLog.objects.create(
+            user=user,
+            lead=lead,
+            action="created",
+            description=f"Lead '{lead.lead_name}' was created",
+        )
+
         return Response(serializer.data)
+
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 # @api_view(["POST"])
 # def create_blog(request):
@@ -80,20 +94,22 @@ def create_blog(request):
 #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
-
 @api_view(["PUT"])
 @permission_classes([IsAuthenticated])
 def update_blog(request, pk):
     user = request.user
     blog = Lead.objects.get(id=pk)
     if blog.author != user:
-        return Response({"error": "You are not the author of this blog"}, status=status.HTTP_403_FORBIDDEN)
+        return Response(
+            {"error": "You are not the author of this blog"},
+            status=status.HTTP_403_FORBIDDEN,
+        )
     serializer = LeadSerializer(blog, data=request.data)
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 # @api_view(["PUT"])
 # def update_blog(request, pk):
@@ -109,12 +125,16 @@ def update_blog(request, pk):
 @permission_classes([IsAuthenticated])
 def delete_blog(request, pk):
     blog = Lead.objects.get(id=pk)
-    user = request.user 
+    user = request.user
     if blog.author != user:
-        return Response({"error": "You are not the author of this blog"}, status=status.HTTP_403_FORBIDDEN)
+        return Response(
+            {"error": "You are not the author of this blog"},
+            status=status.HTTP_403_FORBIDDEN,
+        )
     blog.delete()
-    return Response({"message": "Blog deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
-
+    return Response(
+        {"message": "Blog deleted successfully"}, status=status.HTTP_204_NO_CONTENT
+    )
 
 
 @api_view(["GET"])
@@ -125,7 +145,7 @@ def get_username(request):
     return Response({"username": username})
 
 
-@api_view(['GET'])
+@api_view(["GET"])
 def get_userinfo(request, username):
     User = get_user_model()
     user = User.objects.get(username=username)
@@ -142,10 +162,6 @@ def get_user(request, email):
         return Response(serializer.data, status=status.HTTP_200_OK)
     except User.DoesNotExist:
         return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
-    
-
-
-
 
 
 # Facebook: https://www.facebook.com/sampleusername

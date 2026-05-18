@@ -1,10 +1,12 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser, Lead
+from .models import CustomUser, Lead, ActivityLog
 from django.utils.translation import gettext_lazy as _
 
 # Register your models here.
 
+class ActivityLogAdmin(admin.ModelAdmin):
+    list_display = ["user", "lead", "action", "created_at"]
 
 class CustomUserAdmin(UserAdmin):
     list_display = ("username", "first_name", "last_name", "email", "job_title", "profile_picture", "profile_picture_url")
@@ -35,7 +37,7 @@ class CustomUserAdmin(UserAdmin):
 
 
 admin.site.register(CustomUser, CustomUserAdmin)
-
+admin.site.register(ActivityLog, ActivityLogAdmin)
 
 class BlogAdmin(admin.ModelAdmin):
     list_display = ["lead_name", "email", "phone", "company", "status", "author", "created_at"]
