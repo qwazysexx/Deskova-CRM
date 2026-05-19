@@ -16,16 +16,23 @@ from rest_framework.pagination import PageNumberPagination
 
 
 class BlogListPagination(PageNumberPagination):
-    page_size = 3
+    page_size = 10
 
 
 # Create your views here.
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def blog_list(request):
-    blogs = Lead.objects.all()
+
+    if request.user.is_staff:
+        blogs = Lead.objects.all()
+    else:
+        blogs = Lead.objects.filter(author=request.user)
+
     paginator = BlogListPagination()
     paginated_blogs = paginator.paginate_queryset(blogs, request)
     serializer = LeadSerializer(paginated_blogs, many=True)
+
     return paginator.get_paginated_response(serializer.data)
 
 
@@ -119,15 +126,37 @@ def create_blog(request):
 def update_blog(request, pk):
     user = request.user
     blog = Lead.objects.get(id=pk)
-    if blog.author != user:
+
+    if blog.author != user and not user.is_staff:
         return Response(
-            {"error": "You are not the author of this blog"},
+            {"error": "You are not allowed to update this lead"},
             status=status.HTTP_403_FORBIDDEN,
         )
+
+    old_status = blog.status
+
     serializer = LeadSerializer(blog, data=request.data)
+
     if serializer.is_valid():
-        serializer.save()
+        updated_lead = serializer.save()
+
+        if old_status != updated_lead.status:
+            ActivityLog.objects.create(
+                user=user,
+                lead=updated_lead,
+                action="status_changed",
+                description=f"Status changed from '{old_status}' to '{updated_lead.status}'",
+            )
+        else:
+            ActivityLog.objects.create(
+                user=user,
+                lead=updated_lead,
+                action="updated",
+                description=f"Lead '{updated_lead.lead_name}' was updated",
+            )
+
         return Response(serializer.data)
+
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -144,17 +173,27 @@ def update_blog(request, pk):
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def delete_blog(request, pk):
-    blog = Lead.objects.get(id=pk)
     user = request.user
-    if blog.author != user:
+    blog = Lead.objects.get(id=pk)
+
+    if blog.author != user and not user.is_staff:
         return Response(
-            {"error": "You are not the author of this blog"},
+            {"error": "You are not allowed to delete this lead"},
             status=status.HTTP_403_FORBIDDEN,
         )
-    blog.delete()
-    return Response(
-        {"message": "Blog deleted successfully"}, status=status.HTTP_204_NO_CONTENT
+
+    lead_name = blog.lead_name
+
+    ActivityLog.objects.create(
+        user=user,
+        lead=blog,
+        action="deleted",
+        description=f"Lead '{lead_name}' was deleted",
     )
+
+    blog.delete()
+
+    return Response({"message": "Lead deleted successfully"})
 
 
 @api_view(["GET"])

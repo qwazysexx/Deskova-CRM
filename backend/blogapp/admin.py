@@ -7,7 +7,7 @@ from django.utils.translation import gettext_lazy as _
 
 
 class ActivityLogAdmin(admin.ModelAdmin):
-    list_display = ["user", "lead", "action", "created_at"]
+    list_display = ["user", "lead", "action", "description", "created_at"]
 
 
 class CustomUserAdmin(UserAdmin):
