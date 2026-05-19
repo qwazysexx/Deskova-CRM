@@ -68,7 +68,7 @@ const LeadDetailPage = ({ username, isAuthenticated }) => {
           {lead.lead_name}
         </h2>
 
-        {isAuthenticated && username === lead.author.username && (
+        {isAuthenticated && (
           <span className="flex justify-between items-center gap-2">
             <HiPencilAlt
               onClick={toggleModal}

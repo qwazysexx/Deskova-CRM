@@ -7,7 +7,7 @@ import { useQuery, keepPreviousData } from "@tanstack/react-query";
 
 const HomePage = () => {
   const [page, setPage] = useState(1);
-  const numOfBlogsPerPage = 3;
+  const numOfBlogsPerPage = 4;
 
 const [search, setSearch] = useState("");
 const [statusFilter, setStatusFilter] = useState("All");
@@ -34,7 +34,7 @@ const [statusFilter, setStatusFilter] = useState("All");
   return matchesSearch && matchesStatus;
 });
 
-  const totalLeads = leads.length;
+  const totalLeads = data?.count || 0;
   const newLeads = leads.filter((lead) => lead.status === "New").length;
   const contactedLeads = leads.filter((lead) => lead.status === "Contacted").length;
   const qualifiedLeads = leads.filter((lead) => lead.status === "Qualified").length;
