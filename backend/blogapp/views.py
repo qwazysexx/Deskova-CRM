@@ -223,6 +223,32 @@ def get_user(request, email):
         return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
 
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def activity_logs(request):
+    if not request.user.is_staff:
+        return Response(
+            {"error": "Only admin can view activity logs"},
+            status=status.HTTP_403_FORBIDDEN,
+        )
+
+    logs = ActivityLog.objects.all()
+
+    data = [
+        {
+            "id": log.id,
+            "user": log.user.username if log.user else "-",
+            "lead": log.lead.lead_name if log.lead else "-",
+            "action": log.action,
+            "description": log.description,
+            "created_at": log.created_at,
+        }
+        for log in logs
+    ]
+
+    return Response(data)
+
+
 # Facebook: https://www.facebook.com/sampleusername
 # Instagram: https://www.instagram.com/sampleusername
 # YouTube: https://www.youtube.com/user/sampleusername

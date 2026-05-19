@@ -23,12 +23,12 @@ const NavBar = ({
 
   return (
     <>
-      <nav className="max-container padding-x py-6 flex justify-between items-center gap-6 sticky top-0 z-10 bg-[#FFFFFF] dark:bg-[#141624]">
+      <nav className="max-container padding-x py-6 justify-between flex items-center gap-6 sticky top-0 z-10 bg-[#FFFFFF] dark:bg-[#141624]">
         <Link to="/" className="text-[#141624] text-2xl dark:text-[#FFFFFF]">
           Deskova CRM
         </Link>
 
-        <ul className="flex items-center justify-end gap-9 text-[#3B3C4A] lg:flex-1 max-md:hidden dark:text-[#FFFFFF]">
+        <ul className="flex items-center justify-end gap-6 text-[#3B3C4A] lg:flex-1 max-md:hidden dark:text-[#FFFFFF]">
           {isAuthenticated ? (
             <>
               <li>
@@ -83,14 +83,23 @@ const NavBar = ({
               Kanban
             </NavLink>
           </li>
+          <li className="font-semibold">
+            <NavLink
+              to="/activity"
+              className={({ isActive }) => (isActive ? "active" : "")}
+            >
+              Activity
+            </NavLink>
+          </li>
         </ul>
+        <div className="flex items-center gap-4">
+          <Switch onCheckedChange={handleDarkMode} checked={darkMode} />
 
-        <Switch onCheckedChange={handleDarkMode} checked={darkMode} />
-
-        <FaHamburger
-          className="text-2xl cursor-pointer hidden max-md:block dark:text-white"
-          onClick={() => setShowNavBar((curr) => !curr)}
-        />
+          <FaHamburger
+            className="text-2xl cursor-pointer hidden max-md:block dark:text-white"
+            onClick={() => setShowNavBar((curr) => !curr)}
+          />
+        </div>
       </nav>
 
       {showNavBar && (

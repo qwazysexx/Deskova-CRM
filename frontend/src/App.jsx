@@ -13,7 +13,7 @@ import SignupPage from "./pages/SignupPage";
 import LoginPage from "./pages/LoginPage";
 import ProfilePage from "./pages/ProfilePage";
 import NotFoundPage from "./pages/NotFoundPage";
-
+import ActivityLogsPage from "./pages/ActivityLogsPage";
 import { getUsername } from "./services/apiCrm";
 
 const App = () => {
@@ -83,7 +83,7 @@ const App = () => {
               />
             }
           />
-
+          <Route path="/activity" element={<ActivityLogsPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>
