@@ -11,10 +11,10 @@ const HomePage = () => {
   const [statusFilter, setStatusFilter] = useState("All");
   const [sortBy, setSortBy] = useState("newest");
 
-  const numOfBlogsPerPage = 10;
+  const numOfleadsPerPage = 10;
 
   const { isPending, data } = useQuery({
-    queryKey: ["blogs", page],
+    queryKey: ["leads", page],
     queryFn: () => getLeads(page),
     placeholderData: keepPreviousData,
   });
@@ -58,7 +58,7 @@ const HomePage = () => {
   const inProgressLeads = leads.filter((lead) => lead.status === "In Progress").length;
   const closedLeads = leads.filter((lead) => lead.status === "Closed").length;
 
-  const numOfPages = Math.ceil((data?.count || 0) / numOfBlogsPerPage);
+  const numOfPages = Math.ceil((data?.count || 0) / numOfleadsPerPage);
 
   function handleSetPage(val) {
     setPage(val);

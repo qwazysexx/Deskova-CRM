@@ -15,38 +15,38 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.pagination import PageNumberPagination
 
 
-class BlogListPagination(PageNumberPagination):
+class leadListPagination(PageNumberPagination):
     page_size = 10
 
 
 # Create your views here.
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
-def blog_list(request):
+def lead_list(request):
 
     if request.user.is_staff:
-        blogs = Lead.objects.all()
+        leads = Lead.objects.all()
     else:
-        blogs = Lead.objects.filter(author=request.user)
+        leads = Lead.objects.filter(author=request.user)
 
-    paginator = BlogListPagination()
-    paginated_blogs = paginator.paginate_queryset(blogs, request)
-    serializer = LeadSerializer(paginated_blogs, many=True)
+    paginator = leadListPagination()
+    paginated_leads = paginator.paginate_queryset(leads, request)
+    serializer = LeadSerializer(paginated_leads, many=True)
 
     return paginator.get_paginated_response(serializer.data)
 
 
 # @api_view(['GET'])
-# def blog_list(request):
-#     blogs = Blog.objects.all()
-#     serializer = LeadSerializer(blogs, many=True)
+# def lead_list(request):
+#     leads = lead.objects.all()
+#     serializer = LeadSerializer(leads, many=True)
 #     return Response(serializer.data)
 
 
 @api_view(["GET"])
-def get_blog(request, pk):
-    blog = Lead.objects.get(id=pk)
-    serializer = LeadSerializer(blog)
+def get_lead(request, pk):
+    lead = Lead.objects.get(id=pk)
+    serializer = LeadSerializer(lead)
     return Response(serializer.data)
 
 
@@ -93,7 +93,7 @@ def update_user_profile(request):
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
-def create_blog(request):
+def create_lead(request):
     user = request.user
     serializer = LeadSerializer(data=request.data)
 
@@ -113,7 +113,7 @@ def create_blog(request):
 
 
 # @api_view(["POST"])
-# def create_blog(request):
+# def create_lead(request):
 #     serializer = LeadSerializer(data=request.data)
 #     if serializer.is_valid():
 #         serializer.save()
@@ -123,19 +123,19 @@ def create_blog(request):
 
 @api_view(["PUT"])
 @permission_classes([IsAuthenticated])
-def update_blog(request, pk):
+def update_lead(request, pk):
     user = request.user
-    blog = Lead.objects.get(id=pk)
+    lead = Lead.objects.get(id=pk)
 
-    if blog.author != user and not user.is_staff:
+    if lead.author != user and not user.is_staff:
         return Response(
             {"error": "You are not allowed to update this lead"},
             status=status.HTTP_403_FORBIDDEN,
         )
 
-    old_status = blog.status
+    old_status = lead.status
 
-    serializer = LeadSerializer(blog, data=request.data)
+    serializer = LeadSerializer(lead, data=request.data)
 
     if serializer.is_valid():
         updated_lead = serializer.save()
@@ -161,9 +161,9 @@ def update_blog(request, pk):
 
 
 # @api_view(["PUT"])
-# def update_blog(request, pk):
-#     blog = Blog.objects.get(id=pk)
-#     serializer = LeadSerializer(blog, data=request.data)
+# def update_lead(request, pk):
+#     lead = lead.objects.get(id=pk)
+#     serializer = LeadSerializer(lead, data=request.data)
 #     if serializer.is_valid():
 #         serializer.save()
 #         return Response(serializer.data)
@@ -172,26 +172,26 @@ def update_blog(request, pk):
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
-def delete_blog(request, pk):
+def delete_lead(request, pk):
     user = request.user
-    blog = Lead.objects.get(id=pk)
+    lead = Lead.objects.get(id=pk)
 
-    if blog.author != user and not user.is_staff:
+    if lead.author != user and not user.is_staff:
         return Response(
             {"error": "You are not allowed to delete this lead"},
             status=status.HTTP_403_FORBIDDEN,
         )
 
-    lead_name = blog.lead_name
+    lead_name = lead.lead_name
 
     ActivityLog.objects.create(
         user=user,
-        lead=blog,
+        lead=lead,
         action="deleted",
         description=f"Lead '{lead_name}' was deleted",
     )
 
-    blog.delete()
+    lead.delete()
 
     return Response({"message": "Lead deleted successfully"})
 

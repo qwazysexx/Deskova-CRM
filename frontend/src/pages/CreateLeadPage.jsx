@@ -39,7 +39,7 @@ const CreateLeadPage = ({ lead, leadID, isAuthenticated }) => {
 
     onError: (err) => {
       toast.error(err.message);
-      console.log("Error updating blog", err);
+      console.log("Error updating lead", err);
     },
   });
 
@@ -47,7 +47,7 @@ const CreateLeadPage = ({ lead, leadID, isAuthenticated }) => {
     mutationFn: (data) => createLead(data),
     onSuccess: () => {
       toast.success("New post added successfully");
-      queryClient.invalidateQueries({ queryKey: ["blogs"] });
+      queryClient.invalidateQueries({ queryKey: ["leads"] });
       navigate("/");
     },
   });
@@ -101,7 +101,7 @@ const CreateLeadPage = ({ lead, leadID, isAuthenticated }) => {
           type="text"
           id="lead_name"
           {...register("lead_name", {
-            required: "Blog's lead_name is required",
+            required: "lead's lead_name is required",
             minLength: {
               value: 3,
               message: "The lead_name must be at least 3 characters",
@@ -154,9 +154,9 @@ const CreateLeadPage = ({ lead, leadID, isAuthenticated }) => {
         <Label htmlFor="notes">notes</Label>
         <Textarea
           id="notes"
-          placeholder="Write your blog post"
+          placeholder="Write your lead post"
           {...register("notes", {
-            required: "Blog's notes is required",
+            required: "lead's notes is required",
             minLength: {
               value: 10,
               message: "The notes must be at least 10 characters",

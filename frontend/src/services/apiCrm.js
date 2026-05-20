@@ -2,7 +2,7 @@ import api from "@/api";
 
 export async function getLeads(page) {
   try {
-    const response = await api.get(`blog_list?page=${page}`);
+    const response = await api.get(`lead_list?page=${page}`);
     return response.data;
   } catch (err) {
     throw new Error(err.message);
@@ -11,7 +11,7 @@ export async function getLeads(page) {
 
 export async function getLead(id) {
   try {
-    const response = await api.get(`blogs/${id}`);
+    const response = await api.get(`leads/${id}`);
     return response.data;
   } catch (err) {
     throw new Error(err.message);
@@ -55,7 +55,7 @@ export async function getUsername() {
 
 export async function createLead(data) {
   try {
-    const response = await api.post("create_blog/", data);
+    const response = await api.post("create_lead/", data);
     return response.data;
   } catch (err) {
     throw new Error(err.message);
@@ -64,11 +64,11 @@ export async function createLead(data) {
 
 export async function updateLead(data, id) {
   try {
-    const response = await api.put(`update_blog/${id}/`, data);
+    const response = await api.put(`update_lead/${id}/`, data);
     return response.data;
   } catch (err) {
     if (err.response) {
-      throw new Error(err.response?.data?.message || "Failed to update blog");
+      throw new Error(err.response?.data?.message || "Failed to update lead");
     }
 
     throw new Error(err.message);
@@ -77,11 +77,11 @@ export async function updateLead(data, id) {
 
 export async function deleteLead(id) {
   try {
-    const response = await api.post(`delete_blog/${id}/`);
+    const response = await api.post(`delete_lead/${id}/`);
     return response.data;
   } catch (err) {
     if (err.response) {
-      throw new Error(err.response?.data?.message || "Failed to delete blog");
+      throw new Error(err.response?.data?.message || "Failed to delete lead");
     }
 
     throw new Error(err.message);
