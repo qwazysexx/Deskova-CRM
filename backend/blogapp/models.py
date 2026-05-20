@@ -118,7 +118,7 @@ class ActivityLog(models.Model):
 
 
 class InviteCode(models.Model):
-    code = models.CharField(max_length=100, unique=True)
+    code = models.CharField(max_length=100, unique=True, blank=True)
     is_used = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
